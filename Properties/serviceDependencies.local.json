@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "sqlite1": {
+      "secretStore": null,
+      "type": "sqlite.local",
+      "connectionId": "MainDbConnectionString",
+      "dynamicId": null
+    }
+  }
+}

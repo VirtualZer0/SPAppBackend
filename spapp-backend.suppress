@@ -1,0 +1,76 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="SuppressVersion">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="CurrentVersion" type="xs:int" minOccurs="0" />
+                <xs:element name="IsPrimary" type="xs:boolean" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="spapp-backend">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="FileName" type="xs:string" default="" />
+                <xs:element name="ErrorCode" type="xs:string" default="" />
+                <xs:element name="Message" type="xs:string" default="" />
+                <xs:element name="CodePrev" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeCurrent" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeNext" type="xs:unsignedInt" default="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+      <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//spapp-backend" />
+        <xs:field xpath="FileName" />
+        <xs:field xpath="ErrorCode" />
+        <xs:field xpath="Message" />
+        <xs:field xpath="CodePrev" />
+        <xs:field xpath="CodeCurrent" />
+        <xs:field xpath="CodeNext" />
+      </xs:unique>
+    </xs:element>
+  </xs:schema>
+  <SuppressVersion>
+    <CurrentVersion>3</CurrentVersion>
+    <IsPrimary>false</IsPrimary>
+  </SuppressVersion>
+  <spapp-backend>
+    <FileName>MainAdminController.cs</FileName>
+    <ErrorCode>V3163</ErrorCode>
+    <Message>An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.</Message>
+    <CodePrev>3738027549</CodePrev>
+    <CodeCurrent>12051</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </spapp-backend>
+  <spapp-backend>
+    <FileName>MainAdminController.cs</FileName>
+    <ErrorCode>V5606</ErrorCode>
+    <Message>An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.</Message>
+    <CodePrev>3738027549</CodePrev>
+    <CodeCurrent>12051</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </spapp-backend>
+  <spapp-backend>
+    <FileName>MainAdminController.cs</FileName>
+    <ErrorCode>V3163</ErrorCode>
+    <Message>An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.</Message>
+    <CodePrev>125</CodePrev>
+    <CodeCurrent>4499</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </spapp-backend>
+  <spapp-backend>
+    <FileName>MainAdminController.cs</FileName>
+    <ErrorCode>V5606</ErrorCode>
+    <Message>An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.</Message>
+    <CodePrev>125</CodePrev>
+    <CodeCurrent>4499</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </spapp-backend>
+</NewDataSet>

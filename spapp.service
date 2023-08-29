@@ -1,0 +1,19 @@
+[Unit]
+Description=SPApp ASP.NET Backend service
+After=network.target
+StartLimitIntervalSec=3
+
+[Service]
+Restart=always
+RestartSec=3
+User=www-data
+WorkingDirectory=/env/services/spapp
+ExecStart=/usr/bin/dotnet /env/services/spapp/spapp-backend.dll
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+SyslogIdentifier=spapp-backend
+KillSignal=SIGINT
+TimeoutStopSec=90
+
+[Install]
+WantedBy=multi-user.target
