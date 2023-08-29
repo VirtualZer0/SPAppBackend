@@ -41,7 +41,7 @@ namespace spapp_backend.Modules.Crowdfunding.Controllers
 
       if (user != null)
       {
-        q.Include(c => c.User).Where(c => c.User.Id == user);
+        q = q.Include(c => c.User).Where(c => c.User.Id == user);
       }
 
       var itemCount = await q.CountAsync();
