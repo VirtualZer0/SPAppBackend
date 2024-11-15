@@ -11,6 +11,7 @@ using spapp_backend.Db;
 using spapp_backend.Utils;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Security.Claims;
 
 namespace spapp_backend.Core.Controllers
@@ -154,13 +155,15 @@ namespace spapp_backend.Core.Controllers
         OptimalCompression = true,
       };
 
+      var newPath = filePath;
+
       if (file.Ext != ".webp" && file.Ext != ".jpg")
       {
         image.Format = MagickFormat.WebP;
         image.Quality = 95;
         file.Ext = ".webp";
         File.Delete(filePath);
-        var newPath = Path.Combine(App.GetStaticPath(), "uploads", file.FullPath);
+        newPath = Path.Combine(App.GetStaticPath(), "uploads", file.FullPath);
         await image.WriteAsync(newPath);
         optimizer.LosslessCompress(newPath);
         db.Update(file);
@@ -173,6 +176,11 @@ namespace spapp_backend.Core.Controllers
           await image.WriteAsync(filePath);
         }
         optimizer.LosslessCompress(filePath);
+      }
+
+      if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+      {
+        File.SetUnixFileMode(newPath, UnixFileMode.OtherWrite | UnixFileMode.OtherRead | UnixFileMode.UserRead | UnixFileMode.UserWrite);
       }
 
       return file;
@@ -218,7 +226,7 @@ namespace spapp_backend.Core.Controllers
       server.MapPost("files/upload", UploadFile);
     }
 
-    Task IWebController.RunTimingTask(SQLiteDbContext db)
+    Task IWebController.RunTimingTask(SQLiteDbContext db, PreviewGen pGen)
     {
       return Task.CompletedTask;
     }

@@ -235,7 +235,7 @@ namespace spapp_backend.Modules.Admin.Controllers
       server.MapGet("/admin/statistic", GetMainStat);
     }
 
-    Task IWebController.RunTimingTask(SQLiteDbContext db)
+    Task IWebController.RunTimingTask(SQLiteDbContext db, PreviewGen pGen)
     {
       return Task.CompletedTask;
     }

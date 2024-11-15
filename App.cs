@@ -291,7 +291,7 @@ namespace spapp_backend
       var db = new SQLiteDbContext();
       foreach (var module in Modules)
       {
-        module.Value.RunTimingTask(db).Wait();
+        module.Value.RunTimingTask(db, PreviewGen).Wait();
       }
     }
 

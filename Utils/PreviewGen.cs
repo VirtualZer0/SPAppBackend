@@ -2,6 +2,7 @@
 using PuppeteerSharp;
 using spapp_backend.Core.Enums;
 using System;
+using System.Runtime.InteropServices;
 
 namespace spapp_backend.Utils
 {
@@ -63,6 +64,11 @@ namespace spapp_backend.Utils
           image.Quality = 95;
           File.Delete(savePath);
           await image.WriteAsync(optPath);
+
+          if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+          {
+            File.SetUnixFileMode(optPath, UnixFileMode.OtherWrite | UnixFileMode.OtherRead | UnixFileMode.UserRead | UnixFileMode.UserWrite);
+          }
         }
 
         currentLaunchCount--;

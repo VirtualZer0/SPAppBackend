@@ -316,7 +316,7 @@ namespace spapp_backend.Core.Controllers
       server.MapGet("payments/topup/{uuid}", GetPayment);
     }
 
-    Task IWebController.RunTimingTask(SQLiteDbContext db)
+    Task IWebController.RunTimingTask(SQLiteDbContext db, PreviewGen pGen)
     {
       return Task.CompletedTask;
     }

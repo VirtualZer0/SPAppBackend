@@ -249,7 +249,7 @@ namespace spapp_backend.Core.Controllers
       server.MapGet("user/me", GetMyProfile);
     }
 
-    Task IWebController.RunTimingTask(SQLiteDbContext db)
+    Task IWebController.RunTimingTask(SQLiteDbContext db, PreviewGen pGen)
     {
       return Task.CompletedTask;
     }

@@ -131,7 +131,7 @@ namespace spapp_backend.Modules.Crowdfunding.Controllers
 
     [Authorize(Roles = AuthRoles.User)]
     [ProducesResponseType(typeof(CrowdfundCompanyItemDto), (int)HttpStatusCode.OK)]
-    public async Task<IResult> CreateCompany(SQLiteDbContext db, ClaimsPrincipal claims, UserManager<User> userMgr, CreateCrowdfundCompanyDto dto, MCServer mcs)
+    public async Task<IResult> CreateCompany(SQLiteDbContext db, ClaimsPrincipal claims, PreviewGen pGen, UserManager<User> userMgr, CreateCrowdfundCompanyDto dto, MCServer mcs)
     {
       var user = await userMgr.GetUserAsync(claims);
       if (user == null)
@@ -202,6 +202,8 @@ namespace spapp_backend.Modules.Crowdfunding.Controllers
 
       db.Add(crowdCompany);
       await db.SaveChangesAsync();
+
+      _ = Task.Run(() => pGen.MakePreview("crowd", crowdCompany.Id, mcs));
 
       return Results.Ok(new CrowdfundCompanyItemDto
       {
@@ -326,7 +328,7 @@ namespace spapp_backend.Modules.Crowdfunding.Controllers
 
     [ProducesResponseType(typeof(CommentDto), (int)HttpStatusCode.OK)]
     [Authorize(Roles = AuthRoles.User)]
-    public async Task<IResult> SupportCompany(SQLiteDbContext db, ClaimsPrincipal claims, UserManager<User> userMgr, SupportCrowdfundCompanyDto dto, uint id, MCServer mcs)
+    public async Task<IResult> SupportCompany(SQLiteDbContext db, ClaimsPrincipal claims, PreviewGen pGen, UserManager<User> userMgr, SupportCrowdfundCompanyDto dto, uint id, MCServer mcs)
     {
       var user = await userMgr.GetUserAsync(claims);
       if (user == null)
@@ -376,13 +378,13 @@ namespace spapp_backend.Modules.Crowdfunding.Controllers
       company.CurrentAmount += trans.Amount;
       db.Update(company);
       await db.SaveChangesAsync();
-
+      _ = Task.Run(() => pGen.MakePreview("crowd", id, mcs));
       return Results.Ok();
     }
 
     [ProducesResponseType(typeof(CommentDto), (int)HttpStatusCode.OK)]
     [Authorize(Roles = AuthRoles.User)]
-    public async Task<IResult> CancelCompany(SQLiteDbContext db, ClaimsPrincipal claims, UserManager<User> userMgr, uint id, MCServer mcs)
+    public async Task<IResult> CancelCompany(SQLiteDbContext db, ClaimsPrincipal claims, PreviewGen pGen, UserManager<User> userMgr, uint id, MCServer mcs)
     {
       var user = await userMgr.GetUserAsync(claims);
       if (user ==  null)
@@ -402,14 +404,14 @@ namespace spapp_backend.Modules.Crowdfunding.Controllers
         return new ErrorResult(ResponseError.Forbidden, HttpStatusCode.Forbidden);
       }
 
-      await CloseCompany(db, id, false, mcs);
+      await CloseCompany(db, id, false, pGen, mcs);
 
       return Results.Ok();
     }
 
     [ProducesResponseType(typeof(CommentDto), (int)HttpStatusCode.OK)]
     [Authorize(Roles = AuthRoles.User)]
-    public async Task<IResult> AcceptCompany(SQLiteDbContext db, ClaimsPrincipal claims, UserManager<User> userMgr, uint id, MCServer mcs)
+    public async Task<IResult> AcceptCompany(SQLiteDbContext db, ClaimsPrincipal claims, PreviewGen pGen, UserManager<User> userMgr, uint id, MCServer mcs)
     {
       var user = await userMgr.GetUserAsync(claims);
       if (user == null)
@@ -434,12 +436,12 @@ namespace spapp_backend.Modules.Crowdfunding.Controllers
         return new ErrorResult(ResponseError.Forbidden, HttpStatusCode.Forbidden);
       }
 
-      await CloseCompany(db, id, true, mcs);
+      await CloseCompany(db, id, true, pGen, mcs);
 
       return Results.Ok();
     }
 
-    public async Task<ErrorResult?> CloseCompany(SQLiteDbContext db, uint id, bool success, MCServer mcs)
+    public async Task<ErrorResult?> CloseCompany(SQLiteDbContext db, uint id, bool success, PreviewGen pGen, MCServer mcs)
     {
       var company = await db.CrowdCompanies
         .Where(c => c.Id == id && c.Mcs == mcs)
@@ -488,6 +490,7 @@ namespace spapp_backend.Modules.Crowdfunding.Controllers
       db.Update(company);
       db.Update(userAccount);
       await db.SaveChangesAsync();
+      _ = Task.Run(() => pGen.MakePreview("crowd", id, mcs));
       return null;
     }
 
@@ -595,13 +598,13 @@ namespace spapp_backend.Modules.Crowdfunding.Controllers
       server.MapPost("/crowd/companies/{id}/accept", AcceptCompany);
     }
 
-    async Task IWebController.RunTimingTask(SQLiteDbContext db)
+    async Task IWebController.RunTimingTask(SQLiteDbContext db, PreviewGen pGen)
     {
       var companies = await db.CrowdCompanies.Where(c => c.IsOver == false && c.EndDate <= DateTime.UtcNow).ToListAsync();
 
       foreach(var company in companies)
       {
-        await CloseCompany(db, company.Id, company.CurrentAmount >= company.Goal, company.Mcs);
+        await CloseCompany(db, company.Id, company.CurrentAmount >= company.Goal, pGen, company.Mcs);
       }
     }
   }
